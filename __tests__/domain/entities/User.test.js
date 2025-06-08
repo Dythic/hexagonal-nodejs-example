@@ -9,6 +9,7 @@ describe('User Entity', () => {
       expect(user.name).toBe('John Doe');
       expect(user.id).toBeNull();
       expect(user.createdAt).toBeInstanceOf(Date);
+      expect(user.updatedAt).toBeInstanceOf(Date);
     });
 
     it('devrait normaliser l\'email en minuscules', () => {
@@ -63,8 +64,24 @@ describe('User Entity', () => {
         id: '123',
         email: 'test@example.com',
         name: 'John Doe',
-        createdAt: date
+        createdAt: date,
+        updatedAt: expect.any(Date) // updatedAt est maintenant inclus
       });
+    });
+  });
+
+  describe('updateProfile', () => {
+    it('devrait mettre à jour le profil', () => {
+      const user = new User('123', 'test@example.com', 'John Doe');
+      const initialUpdatedAt = user.updatedAt;
+      
+      // Attendre un peu pour voir la différence de timestamp
+      setTimeout(() => {
+        user.updateProfile('Jane Doe');
+        
+        expect(user.name).toBe('Jane Doe');
+        expect(user.updatedAt).not.toEqual(initialUpdatedAt);
+      }, 10);
     });
   });
 });

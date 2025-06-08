@@ -126,7 +126,6 @@ describe('Auth API Integration Tests', () => {
         let accessToken;
 
         beforeEach(async () => {
-            // Créer et connecter un utilisateur
             await request(app)
                 .post('/api/auth/register')
                 .send({
@@ -165,26 +164,33 @@ describe('Auth API Integration Tests', () => {
 
         it('devrait permettre de changer le mot de passe', async () => {
             const response = await request(app)
-                .post('/api/auth/change-password')
-                .set('Authorization', `Bearer ${accessToken}`)
-                .send({
-                    currentPassword: 'password123',
-                    newPassword: 'newpassword123'
-                })
-                .expect(200);
-
+              .post('/api/auth/change-password')
+              .set('Authorization', `Bearer ${accessToken}`)
+              .send({
+                currentPassword: 'password123',
+                newPassword: 'newpassword123'
+              });
+          
+            // Debug : afficher la réponse en cas d'erreur
+            if (response.status !== 200) {
+              console.log('Response status:', response.status);
+              console.log('Response body:', response.body);
+            }
+          
+            expect(response.status).toBe(200);
             expect(response.body.success).toBe(true);
-
+          
             // Tester la connexion avec le nouveau mot de passe
             const loginResponse = await request(app)
-                .post('/api/auth/login')
-                .send({
-                    email: 'test@example.com',
-                    password: 'newpassword123'
-                })
-                .expect(200);
-
+              .post('/api/auth/login')
+              .send({
+                email: 'test@example.com',
+                password: 'newpassword123'
+              });
+          
+            expect(loginResponse.status).toBe(200);
             expect(loginResponse.body.success).toBe(true);
-        });
+          });
+          
     });
 });

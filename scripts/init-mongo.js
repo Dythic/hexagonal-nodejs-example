@@ -1,7 +1,5 @@
-// Script d'initialisation MongoDB
 db = db.getSiblingDB('hexagonal_app');
 
-// Créer un utilisateur pour l'application
 db.createUser({
   user: 'app_user',
   pwd: 'app_password',
@@ -13,11 +11,9 @@ db.createUser({
   ]
 });
 
-// Créer les collections avec des index
 db.createCollection('users');
 db.users.createIndex({ email: 1 }, { unique: true });
 
-// Créer la base de test
 db = db.getSiblingDB('hexagonal_app_test');
 db.createUser({
   user: 'test_user',

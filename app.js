@@ -67,15 +67,11 @@ async function createApp(config, emailService = null) {
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true }));
 
-  // Routes
+  // Routes d'authentification
   app.use('/api/auth', createAuthRoutes(authController, authMiddleware));
-  // Dans app.js, ligne des routes :
+
+  // Routes utilisateurs (avec authentification)
   app.use('/api', createRoutes(userController, authMiddleware, { requireRole }));
-  
-  // Route protégée exemple avec rôle admin
-  app.get('/api/admin/users', authMiddleware, requireRole('ADMIN'), (req, res) => {
-    userController.getAllUsers(req, res);
-  });
 
   // Middleware de gestion d'erreurs global
   app.use((err, req, res, next) => {

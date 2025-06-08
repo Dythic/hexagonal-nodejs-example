@@ -1,6 +1,5 @@
 const AuthRepository = require('../../domain/ports/AuthRepository');
 const Auth = require('../../domain/entities/Auth');
-const { ObjectId } = require('mongodb');
 
 class MongoAuthRepository extends AuthRepository {
     constructor(mongoClient, dbName) {
@@ -10,7 +9,6 @@ class MongoAuthRepository extends AuthRepository {
 
     async save(auth) {
         if (auth.userId && await this.findByUserId(auth.userId)) {
-            // Mise à jour
             const result = await this.collection.updateOne(
                 { userId: auth.userId },
                 {
@@ -31,7 +29,6 @@ class MongoAuthRepository extends AuthRepository {
 
             return auth;
         } else {
-            // Création
             const doc = {
                 userId: auth.userId,
                 email: auth.email,

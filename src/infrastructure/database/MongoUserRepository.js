@@ -10,7 +10,6 @@ class MongoUserRepository extends UserRepository {
 
   async save(user) {
     if (user.id) {
-      // Mise à jour
       const result = await this.collection.updateOne(
         { _id: new ObjectId(user.id) },
         { 
@@ -28,7 +27,6 @@ class MongoUserRepository extends UserRepository {
       
       return user;
     } else {
-      // Création
       const doc = {
         email: user.email,
         name: user.name,

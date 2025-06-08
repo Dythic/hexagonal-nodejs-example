@@ -7,25 +7,21 @@ class UserService {
   }
 
   async createUser(email, name) {
-    // Vérifier si l'utilisateur existe déjà
     const existingUser = await this.userRepository.findByEmail(email.toLowerCase().trim());
     if (existingUser) {
       throw new Error('Un utilisateur avec cet email existe déjà');
     }
 
-    // Créer le nouvel utilisateur
     const user = User.create(email, name);
-    
-    // Sauvegarder
+
     const savedUser = await this.userRepository.save(user);
-    
-    // Envoyer email de bienvenue (ne pas faire échouer si l'email échoue)
+
     try {
       await this.emailService.sendWelcomeEmail(savedUser);
     } catch (error) {
       console.warn('Échec envoi email de bienvenue:', error.message);
     }
-    
+
     return savedUser;
   }
 
@@ -33,12 +29,12 @@ class UserService {
     if (!id) {
       throw new Error('ID utilisateur requis');
     }
-    
+
     const user = await this.userRepository.findById(id);
     if (!user) {
       throw new Error('Utilisateur non trouvé');
     }
-    
+
     return user;
   }
 
@@ -47,7 +43,7 @@ class UserService {
   }
 
   async deleteUser(id) {
-    const user = await this.getUserById(id); // Vérifier que l'utilisateur existe
+    const user = await this.getUserById(id);
     await this.userRepository.delete(id);
     return user;
   }

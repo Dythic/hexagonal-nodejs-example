@@ -17,14 +17,13 @@ const config = {
 async function startServer() {
   try {
     const { app, mongoClient } = await createApp(config);
-    
+
     const server = app.listen(config.port, () => {
       console.log(`🚀 Serveur démarré sur le port ${config.port}`);
       console.log(`📊 Mongo Express: http://localhost:8081`);
       console.log(`🏥 Health check: http://localhost:${config.port}/api/health`);
     });
 
-    // Gestion propre de l'arrêt
     process.on('SIGTERM', async () => {
       console.log('🛑 Arrêt du serveur...');
       server.close(async () => {
