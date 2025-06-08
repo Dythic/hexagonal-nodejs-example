@@ -142,7 +142,7 @@ Le projet utilise Docker Compose pour MongoDB :
 
 ## 📚 Prochaines étapes
 
-- [ ] Authentification JWT
+- [x] Authentification JWT
 - [ ] Validation avec Joi/Yup
 - [ ] Logging avec Winston
 - [ ] Rate limiting
@@ -151,3 +151,30 @@ Le projet utilise Docker Compose pour MongoDB :
 ---
 
 💡 **Architecture hexagonale** = Logique métier au centre, tout le reste à la périphérie !
+
+## 🔐 Authentification
+
+L'API utilise JWT (JSON Web Tokens) pour l'authentification.
+
+### Endpoints d'authentification
+
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| POST | `/api/auth/register` | Inscription |
+| POST | `/api/auth/login` | Connexion |
+| POST | `/api/auth/refresh-token` | Renouveler le token |
+| POST | `/api/auth/logout` | Déconnexion |
+| POST | `/api/auth/change-password` | Changer mot de passe |
+| GET | `/api/auth/profile` | Profil utilisateur |
+
+### Exemples d'utilisation
+
+#### Inscription
+```bash
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john@example.com",
+    "name": "John Doe",
+    "password": "password123"
+  }'

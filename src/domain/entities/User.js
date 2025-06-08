@@ -4,6 +4,7 @@ class User {
     this.email = email;
     this.name = name;
     this.createdAt = createdAt;
+    this.updatedAt = new Date();
   }
 
   isValidEmail() {
@@ -29,12 +30,20 @@ class User {
     return user;
   }
 
+  updateProfile(name) {
+    if (name && name.length >= 2) {
+      this.name = name.trim();
+      this.updatedAt = new Date();
+    }
+  }
+
   toJSON() {
     return {
       id: this.id,
       email: this.email,
       name: this.name,
-      createdAt: this.createdAt
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt
     };
   }
 }
