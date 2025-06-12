@@ -134,6 +134,23 @@ class AuthService {
 
         await this.authRepository.save(auth);
 
+        // Invalider tous les refresh tokens de cet utilisateur
+        await this.refreshTokenRepository.deleteByUserId(userId);
+    }
+
+    // 🆕 NOUVELLE MÉTHODE : Changement de mot de passe par un admin
+    async adminChangePassword(userId, newPassword) {
+        const auth = await this.authRepository.findByUserId(userId);
+        if (!auth) {
+            throw new Error('Utilisateur non trouvé');
+        }
+
+        const newHashedPassword = await this.passwordService.hash(newPassword);
+        auth.hashedPassword = newHashedPassword;
+
+        await this.authRepository.save(auth);
+
+        // Invalider tous les refresh tokens de cet utilisateur
         await this.refreshTokenRepository.deleteByUserId(userId);
     }
 

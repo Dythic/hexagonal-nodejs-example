@@ -111,6 +111,7 @@ class AuthController {
     async changePassword(req, res) {
         try {
             const { currentPassword, newPassword } = req.body;
+            const { userId } = req.params; // ID depuis l'URL
 
             if (!currentPassword || !newPassword) {
                 return res.status(400).json({
@@ -126,11 +127,67 @@ class AuthController {
                 });
             }
 
-            await this.authService.changePassword(req.user.userId, currentPassword, newPassword);
+            // 🔐 SÉCURITÉ : Vérifier que l'utilisateur ne peut changer que son propre mot de passe
+            if (userId && userId !== req.user.id) {
+                // Sauf si c'est un admin qui veut changer le mot de passe d'un autre utilisateur
+                if (!req.auth.hasRole('ADMIN')) {
+                    return res.status(403).json({
+                        success: false,
+                        error: 'Vous ne pouvez changer que votre propre mot de passe'
+                    });
+                }
+            }
+
+            // Utiliser l'ID depuis l'URL ou celui du token
+            const targetUserId = userId || req.user.id;
+
+            await this.authService.changePassword(targetUserId, currentPassword, newPassword);
 
             res.json({
                 success: true,
                 message: 'Mot de passe modifié avec succès'
+            });
+        } catch (error) {
+            res.status(400).json({
+                success: false,
+                error: error.message
+            });
+        }
+    }
+
+    // 🆕 BONUS : Méthode pour qu'un admin change le mot de passe d'un utilisateur
+    async adminChangePassword(req, res) {
+        try {
+            const { newPassword } = req.body;
+            const { userId } = req.params;
+
+            if (!newPassword) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Nouveau mot de passe requis'
+                });
+            }
+
+            if (newPassword.length < 6) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Le nouveau mot de passe doit contenir au moins 6 caractères'
+                });
+            }
+
+            // Vérifier que c'est un admin
+            if (!req.auth.hasRole('ADMIN')) {
+                return res.status(403).json({
+                    success: false,
+                    error: 'Seuls les administrateurs peuvent effectuer cette action'
+                });
+            }
+
+            await this.authService.adminChangePassword(userId, newPassword);
+
+            res.json({
+                success: true,
+                message: 'Mot de passe administrateur modifié avec succès'
             });
         } catch (error) {
             res.status(400).json({
