@@ -162,35 +162,41 @@ describe('Auth API Integration Tests', () => {
             expect(response.body.success).toBe(false);
         });
 
-        it('devrait permettre de changer le mot de passe', async () => {
+        it('devrait permettre de changer le mot de passe avec userId', async () => {
+            const profileResponse = await request(app)
+                .get('/api/auth/profile')
+                .set('Authorization', `Bearer ${accessToken}`);
+
+            const userId = profileResponse.body.data.user.id;
+
             const response = await request(app)
-              .post('/api/auth/change-password')
-              .set('Authorization', `Bearer ${accessToken}`)
-              .send({
-                currentPassword: 'password123',
-                newPassword: 'newpassword123'
-              });
-          
-            // Debug : afficher la réponse en cas d'erreur
+                .post(`/api/auth/users/${userId}/change-password`)
+                .set('Authorization', `Bearer ${accessToken}`)
+                .send({
+                    currentPassword: 'password123',
+                    newPassword: 'newpassword123'
+                });
+
             if (response.status !== 200) {
-              console.log('Response status:', response.status);
-              console.log('Response body:', response.body);
+                console.log('Response status:', response.status);
+                console.log('Response body:', response.body);
+                console.log('User ID utilisé:', userId);
             }
-          
+
             expect(response.status).toBe(200);
             expect(response.body.success).toBe(true);
-          
+
             // Tester la connexion avec le nouveau mot de passe
             const loginResponse = await request(app)
-              .post('/api/auth/login')
-              .send({
-                email: 'test@example.com',
-                password: 'newpassword123'
-              });
-          
+                .post('/api/auth/login')
+                .send({
+                    email: 'test@example.com',
+                    password: 'newpassword123'
+                });
+
             expect(loginResponse.status).toBe(200);
             expect(loginResponse.body.success).toBe(true);
-          });
-          
+        });
+
     });
 });
