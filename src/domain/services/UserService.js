@@ -1,4 +1,4 @@
-const User = require('../entities/User');
+const User = require("../entities/User");
 
 class UserService {
   constructor(userRepository, emailService) {
@@ -7,9 +7,11 @@ class UserService {
   }
 
   async createUser(email, name) {
-    const existingUser = await this.userRepository.findByEmail(email.toLowerCase().trim());
+    const existingUser = await this.userRepository.findByEmail(
+      email.toLowerCase().trim(),
+    );
     if (existingUser) {
-      throw new Error('Un utilisateur avec cet email existe déjà');
+      throw new Error("Un utilisateur avec cet email existe déjà");
     }
 
     const user = User.create(email, name);
@@ -19,7 +21,7 @@ class UserService {
     try {
       await this.emailService.sendWelcomeEmail(savedUser);
     } catch (error) {
-      console.warn('Échec envoi email de bienvenue:', error.message);
+      console.warn("Échec envoi email de bienvenue:", error.message);
     }
 
     return savedUser;
@@ -27,12 +29,12 @@ class UserService {
 
   async getUserById(id) {
     if (!id) {
-      throw new Error('ID utilisateur requis');
+      throw new Error("ID utilisateur requis");
     }
 
     const user = await this.userRepository.findById(id);
     if (!user) {
-      throw new Error('Utilisateur non trouvé');
+      throw new Error("Utilisateur non trouvé");
     }
 
     return user;

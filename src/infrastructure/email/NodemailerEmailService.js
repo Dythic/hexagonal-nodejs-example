@@ -1,5 +1,5 @@
-const nodemailer = require('nodemailer');
-const EmailService = require('../../domain/ports/EmailService');
+const nodemailer = require("nodemailer");
+const EmailService = require("../../domain/ports/EmailService");
 
 class NodemailerEmailService extends EmailService {
   constructor(config) {
@@ -9,8 +9,8 @@ class NodemailerEmailService extends EmailService {
       port: config.port,
       auth: {
         user: config.user,
-        pass: config.pass
-      }
+        pass: config.pass,
+      },
     });
     this.fromEmail = config.from;
   }
@@ -19,13 +19,13 @@ class NodemailerEmailService extends EmailService {
     const mailOptions = {
       from: this.fromEmail,
       to: user.email,
-      subject: 'Bienvenue dans notre application !',
+      subject: "Bienvenue dans notre application !",
       html: `
         <h1>Bienvenue ${user.name} !</h1>
         <p>Votre compte a été créé avec succès.</p>
         <p>Email: ${user.email}</p>
-        <p>Date de création: ${user.createdAt.toLocaleDateString('fr-FR')}</p>
-      `
+        <p>Date de création: ${user.createdAt.toLocaleDateString("fr-FR")}</p>
+      `,
     };
 
     await this.transporter.sendMail(mailOptions);

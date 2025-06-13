@@ -389,12 +389,7 @@
         "user_id": ""
       },
       "dataPropertyOrder": {
-        "&": [
-          "base_url",
-          "access_token",
-          "refresh_token",
-          "user_id"
-        ]
+        "&": ["base_url", "access_token", "refresh_token", "user_id"]
       },
       "color": null,
       "isPrivate": false,
@@ -414,12 +409,7 @@
         "user_id": ""
       },
       "dataPropertyOrder": {
-        "&": [
-          "base_url",
-          "access_token",
-          "refresh_token",
-          "user_id"
-        ]
+        "&": ["base_url", "access_token", "refresh_token", "user_id"]
       },
       "color": "#7d69cb",
       "isPrivate": false,
@@ -439,12 +429,7 @@
         "user_id": ""
       },
       "dataPropertyOrder": {
-        "&": [
-          "base_url",
-          "access_token",
-          "refresh_token",
-          "user_id"
-        ]
+        "&": ["base_url", "access_token", "refresh_token", "user_id"]
       },
       "color": "#d9534f",
       "isPrivate": false,

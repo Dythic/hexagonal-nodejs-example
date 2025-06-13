@@ -1,19 +1,27 @@
-const express = require('express');
+const express = require("express");
 
 function createAuthRoutes(authController, authMiddleware) {
-    const router = express.Router();
+  const router = express.Router();
 
-    // Routes publiques
-    router.post('/register', (req, res) => authController.register(req, res));
-    router.post('/login', (req, res) => authController.login(req, res));
-    router.post('/refresh-token', (req, res) => authController.refreshToken(req, res));
+  // Routes publiques
+  router.post("/register", (req, res) => authController.register(req, res));
+  router.post("/login", (req, res) => authController.login(req, res));
+  router.post("/refresh-token", (req, res) =>
+    authController.refreshToken(req, res),
+  );
 
-    // Routes protégées
-    router.post('/logout', authMiddleware, (req, res) => authController.logout(req, res));
-    router.get('/profile', authMiddleware, (req, res) => authController.getProfile(req, res));
-    router.post('/users/:userId/change-password', authMiddleware, (req, res) => authController.changePassword(req, res));
+  // Routes protégées
+  router.post("/logout", authMiddleware, (req, res) =>
+    authController.logout(req, res),
+  );
+  router.get("/profile", authMiddleware, (req, res) =>
+    authController.getProfile(req, res),
+  );
+  router.post("/users/:userId/change-password", authMiddleware, (req, res) =>
+    authController.changePassword(req, res),
+  );
 
-    return router;
+  return router;
 }
 
 module.exports = createAuthRoutes;

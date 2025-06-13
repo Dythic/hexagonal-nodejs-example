@@ -1,8 +1,8 @@
 // __tests__/domain/ports/PortsWithMocks.test.js
-describe('Tests des Ports avec Mocks', () => {
-  describe('UserRepository avec Mock', () => {
-    const UserRepository = require('../../../src/domain/ports/UserRepository');
-    
+describe("Tests des Ports avec Mocks", () => {
+  describe("UserRepository avec Mock", () => {
+    const UserRepository = require("../../../src/domain/ports/UserRepository");
+
     class MockUserRepository extends UserRepository {
       constructor() {
         super();
@@ -40,9 +40,9 @@ describe('Tests des Ports avec Mocks', () => {
       }
     }
 
-    it('devrait pouvoir implémenter toutes les méthodes', async () => {
+    it("devrait pouvoir implémenter toutes les méthodes", async () => {
       const repo = new MockUserRepository();
-      const user = { email: 'test@test.com', name: 'Test User' };
+      const user = { email: "test@test.com", name: "Test User" };
 
       // Test save
       const savedUser = await repo.save(user);
@@ -50,11 +50,11 @@ describe('Tests des Ports avec Mocks', () => {
 
       // Test findById
       const foundUser = await repo.findById(savedUser.id);
-      expect(foundUser.email).toBe('test@test.com');
+      expect(foundUser.email).toBe("test@test.com");
 
       // Test findByEmail
-      const userByEmail = await repo.findByEmail('test@test.com');
-      expect(userByEmail.name).toBe('Test User');
+      const userByEmail = await repo.findByEmail("test@test.com");
+      expect(userByEmail.name).toBe("Test User");
 
       // Test findAll
       const allUsers = await repo.findAll();
@@ -67,9 +67,9 @@ describe('Tests des Ports avec Mocks', () => {
     });
   });
 
-  describe('EmailService avec Mock', () => {
-    const EmailService = require('../../../src/domain/ports/EmailService');
-    
+  describe("EmailService avec Mock", () => {
+    const EmailService = require("../../../src/domain/ports/EmailService");
+
     class MockEmailService extends EmailService {
       constructor() {
         super();
@@ -79,8 +79,8 @@ describe('Tests des Ports avec Mocks', () => {
       async sendWelcomeEmail(user) {
         this.sentEmails.push({
           to: user.email,
-          subject: 'Bienvenue',
-          sentAt: new Date()
+          subject: "Bienvenue",
+          sentAt: new Date(),
         });
         return true;
       }
@@ -90,27 +90,27 @@ describe('Tests des Ports avec Mocks', () => {
       }
     }
 
-    it('devrait pouvoir envoyer des emails', async () => {
+    it("devrait pouvoir envoyer des emails", async () => {
       const emailService = new MockEmailService();
-      const user = { email: 'test@test.com', name: 'Test User' };
+      const user = { email: "test@test.com", name: "Test User" };
 
       await emailService.sendWelcomeEmail(user);
 
       const sentEmails = emailService.getSentEmails();
       expect(sentEmails).toHaveLength(1);
-      expect(sentEmails[0].to).toBe('test@test.com');
-      expect(sentEmails[0].subject).toBe('Bienvenue');
+      expect(sentEmails[0].to).toBe("test@test.com");
+      expect(sentEmails[0].subject).toBe("Bienvenue");
     });
   });
 
-  describe('Validation des contrats d\'interface', () => {
-    it('devrait valider que tous les ports ont des méthodes abstraites', () => {
-      const UserRepository = require('../../../src/domain/ports/UserRepository');
-      const EmailService = require('../../../src/domain/ports/EmailService');
-      const AuthRepository = require('../../../src/domain/ports/AuthRepository');
-      const PasswordService = require('../../../src/domain/ports/PasswordService');
-      const TokenService = require('../../../src/domain/ports/TokenService');
-      const RefreshTokenRepository = require('../../../src/domain/ports/RefreshTokenRepository');
+  describe("Validation des contrats d'interface", () => {
+    it("devrait valider que tous les ports ont des méthodes abstraites", () => {
+      const UserRepository = require("../../../src/domain/ports/UserRepository");
+      const EmailService = require("../../../src/domain/ports/EmailService");
+      const AuthRepository = require("../../../src/domain/ports/AuthRepository");
+      const PasswordService = require("../../../src/domain/ports/PasswordService");
+      const TokenService = require("../../../src/domain/ports/TokenService");
+      const RefreshTokenRepository = require("../../../src/domain/ports/RefreshTokenRepository");
 
       const ports = [
         UserRepository,
@@ -118,27 +118,29 @@ describe('Tests des Ports avec Mocks', () => {
         AuthRepository,
         PasswordService,
         TokenService,
-        RefreshTokenRepository
+        RefreshTokenRepository,
       ];
 
-      ports.forEach(PortClass => {
+      ports.forEach((PortClass) => {
         const instance = new PortClass();
-        const methods = Object.getOwnPropertyNames(PortClass.prototype)
-          .filter(method => method !== 'constructor' && typeof instance[method] === 'function');
+        const methods = Object.getOwnPropertyNames(PortClass.prototype).filter(
+          (method) =>
+            method !== "constructor" && typeof instance[method] === "function",
+        );
 
-        methods.forEach(methodName => {
+        methods.forEach((methodName) => {
           try {
             // Essayer d'appeler chaque méthode et vérifier qu'elle lance une erreur
             const result = instance[methodName]();
-            
+
             // Si c'est une méthode async, elle retourne une Promise
-            if (result && typeof result.then === 'function') {
-              result.catch(error => {
-                expect(error.message).toContain('doit être implémentée');
+            if (result && typeof result.then === "function") {
+              result.catch((error) => {
+                expect(error.message).toContain("doit être implémentée");
               });
             }
           } catch (error) {
-            expect(error.message).toContain('doit être implémentée');
+            expect(error.message).toContain("doit être implémentée");
           }
         });
       });
